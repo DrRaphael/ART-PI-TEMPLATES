@@ -9,3 +9,7 @@
 - 2.选择STM32H750XB
 
 <img src="D:\GitHub\ART-PI-TEMPLATES\DOC\PIC\NewProject02.png" alt="NewProject02" style="zoom:80%;" />
+
+- 3.输入一个你喜欢的名字
+
+<img src="D:\GitHub\ART-PI-TEMPLATES\DOC\PIC\NewProject03.png" alt="NewProject03" style="zoom:150%;" />
