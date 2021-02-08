@@ -50,3 +50,26 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.cproject
+.mxproject
+.project
+.settings/language.settings.xml
+.settings/stm32cubeide.project.prefs
+ART-PI-TEMPLATES Debug.launch
+ART-PI-TEMPLATES.ioc
+STM32H750XBHX_FLASH.ld
+STM32H750XBHX_RAM.ld
+Debug/sources.mk
+Debug/objects.mk
+Debug/objects.list
+Debug/Middlewares/Third_Party/FatFs/src/subdir.mk
+Debug/Middlewares/Third_Party/FatFs/src/option/subdir.mk
+Debug/makefile
+Debug/ART-PI-TEMPLATES.bin
+Debug/ART-PI-TEMPLATES.list
+Debug/BSP/SPI_FLASH/subdir.mk
+Debug/Core/Src/subdir.mk
+Debug/Core/Startup/subdir.mk
+Debug/Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
+Debug/FATFS/App/subdir.mk
+Debug/FATFS/Target/subdir.mk
