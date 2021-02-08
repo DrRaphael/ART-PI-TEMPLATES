@@ -1,5 +1,11 @@
 # 如何新建一个STM32CubeIDE工程
 
-1. 首先确保你已经安装了STM32CubeIDE（以后简称IDE）
-2. 打开IDE，新建一个工程，选择STM32 Project
+首先确保你已经安装了STM32CubeIDE（以后简称IDE）
 
+- 1.打开IDE，新建一个工程，选择STM32 Project
+
+<img src="D:\GitHub\ART-PI-TEMPLATES\DOC\PIC\NewProject01.png" alt="NewProject01" style="zoom:80%;" />
+
+- 2.选择STM32H750XB
+
+<img src="D:\GitHub\ART-PI-TEMPLATES\DOC\PIC\NewProject02.png" alt="NewProject02" style="zoom:80%;" />

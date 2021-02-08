@@ -4,7 +4,7 @@
  * Author:Mr Raphael
  */
 
-#if 0
+#if 1
 
 #include "W25Q128_UNIT_TEST.h"
 

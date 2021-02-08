@@ -103,7 +103,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-//		W25Q128_Test();
+		W25Q128_Test();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
