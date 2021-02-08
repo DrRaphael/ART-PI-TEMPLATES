@@ -4,17 +4,37 @@
  * Author:Mr Raphael
  */
 
-#if 1
+#if 0
 
 #include "W25Q128_UNIT_TEST.h"
 
+
+//测试函数包括
 //uint8_t SPI_Flash_ReadByte(uint32_t ADDR);
 //SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void);
 //SPI_FLASH_StatusTypedef SPI_FLASH_WriteEnable(void);
 //SPI_FLASH_StatusTypedef SPI_FLASH_WriteDisable(void);
 //SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data);
 //SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR)
-//SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);
+//SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);//单独测试
+
+
+//测试完成时间2021年2月8日
+//测试结果
+//*******W25Q128单元测试*******
+//测试开始...
+//JEDECID = 0xEF4018
+//开始读测验...
+//读测试结束，耗时： 206289 ms
+//开始写测试....
+//写测试结束，耗时： 717345 ms
+//开始校验....
+//校验测试结束，耗时： 211923 ms
+//开始扇区擦除....
+//扇区擦除结束，耗时： 191757 ms
+//开始二次校验....
+//二次校验测试结束，耗时： 211679 ms
+//测试结束
 
 void W25Q128_Test(void)
 {

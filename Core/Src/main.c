@@ -107,8 +107,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		W25Q128_Test();
-		while(1);
+
 
 
 	}
