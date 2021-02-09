@@ -14,7 +14,7 @@
 #define SPI_Flash_Transmit_Start()		HAL_GPIO_WritePin(SPI_FLASH_EN_GPIO_Port, SPI_FLASH_EN_Pin, GPIO_PIN_RESET);
 #define SPI_Flash_Transmit_Stop()		HAL_GPIO_WritePin(SPI_FLASH_EN_GPIO_Port, SPI_FLASH_EN_Pin, GPIO_PIN_SET);
 #define SPI_FLASH_SIZE 					16*1024*1024	//(bytes)
-#define SPI_FLASH_IDINFO				0xEF4018
+#define SPI_FLASH_ID					0xEF4018
 /*
  *  此处使用SPI_DATA_BUF_SIZE参数来分配Buff的大小
  * */
@@ -63,7 +63,8 @@ typedef enum
 	SPI_FLASH_ERROR = 0x01,
 	SPI_FLASH_Invalid_Instruction = 0x02,
 	SPI_FLASH_Unexpect_ERR = 0x03,
-	SPI_FLASH_BUSY = 0x04
+	SPI_FLASH_BUSY = 0x04,
+	SPI_FLASH_TOOLONGDATA=0x05
 }SPI_FLASH_StatusTypedef;
 
 uint8_t SPIpDataBuffer[SPI_DATA_BUF_SIZE];
@@ -74,6 +75,7 @@ SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteEnable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteDisable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data);
+SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,uint16_t Size);
 SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR);
 SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);
 uint32_t SPI_FLASH_READ_JEDECID(void);

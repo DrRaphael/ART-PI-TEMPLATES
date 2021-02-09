@@ -12,6 +12,14 @@ extern "C" {
 #define _USE_WRITE	1	/* 1: Enable disk_write function */
 #define _USE_IOCTL	1	/* 1: Enable disk_ioctl function */
 
+
+/*User Define Start*/
+#define ATA			0
+#define SPI_FLASH	1
+
+
+/*User Define End*/
+
 #include "integer.h"
 
 

@@ -72,6 +72,7 @@ SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void)
 
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data)
 {
+	//todo 增加对存储器是否为擦除状态的判断
 	uint8_t temp[5];
 	uint8_t *pData;
 	pData = &temp[0];
@@ -83,6 +84,28 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data)
 	temp[4] = Data;
 	SPI_Flash_Transmit_Start();
 	HAL_SPI_Transmit(&hspi1, pData, 5, 0xFF);
+	SPI_Flash_Transmit_Stop();
+	while (SPI_FLASH_ReadBusy() == SPI_FLASH_BUSY)
+		;
+	return SPI_FLASH_OK;
+}
+SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,uint16_t Size)
+{
+	uint8_t temp[4];
+	uint8_t *pData;
+	pData = &temp[0];
+	if(Size > 0x100)
+	{
+		return SPI_FLASH_TOOLONGDATA;
+	}
+	SPI_FLASH_WriteEnable();
+	temp[0] = CMD_PageProgram;
+	temp[1] = (uint8_t) ((ADDR & 0xFF0000) >> 16);
+	temp[2] = (uint8_t) ((ADDR & 0xFF00) >> 8);
+	temp[3] = (uint8_t) (ADDR & 0xFF);
+	SPI_Flash_Transmit_Start();
+	HAL_SPI_Transmit(&hspi1, pData,4, 0xFF);
+	HAL_SPI_Transmit(&FLASH_SPI, pBuffer, Size, 0xFFFF0);
 	SPI_Flash_Transmit_Stop();
 	while (SPI_FLASH_ReadBusy() == SPI_FLASH_BUSY)
 		;
