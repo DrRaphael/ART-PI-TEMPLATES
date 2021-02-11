@@ -43,7 +43,7 @@ typedef enum
 	CMD_PowerDown = 0xB9,
 	CMD_ChipErase = 0xC7
 
-}SPI_Flash_Control_CMD;//SPI Flash 控制命令枚举值
+} SPI_Flash_Control_CMD; //SPI Flash 控制命令枚举值
 
 typedef enum
 {
@@ -55,17 +55,17 @@ typedef enum
 	ReadStatusRegisterInfo = 5,
 	PowerDownInfo = 6,
 	FlashSize = 7
-}SPIFlashInfoIndex;
+} SPIFlashInfoIndex;
 
 typedef enum
 {
-	SPI_FLASH_OK =0x00,
+	SPI_FLASH_OK = 0x00,
 	SPI_FLASH_ERROR = 0x01,
 	SPI_FLASH_Invalid_Instruction = 0x02,
 	SPI_FLASH_Unexpect_ERR = 0x03,
 	SPI_FLASH_BUSY = 0x04,
-	SPI_FLASH_TOOLONGDATA=0x05
-}SPI_FLASH_StatusTypedef;
+	SPI_FLASH_TOOLONGDATA = 0x05
+} SPI_FLASH_StatusTypedef;
 
 uint8_t SPIpDataBuffer[SPI_DATA_BUF_SIZE];
 uint8_t SPIFlashInfo[10];
@@ -75,9 +75,12 @@ SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteEnable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteDisable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data);
-SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,uint16_t Size);
+SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
+		uint16_t Size);
 SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR);
 SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);
 uint32_t SPI_FLASH_READ_JEDECID(void);
+SPI_FLASH_StatusTypedef SPI_FLASH_ReadBytes(uint32_t ADDR, uint32_t size,
+		uint8_t *pBuffer);
 #endif
 #endif /* SPI_FLASH_W25Q128_H_ */

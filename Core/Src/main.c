@@ -105,23 +105,16 @@ int main(void)
 	{
 		uint8_t Data[256];
 		uint8_t *pBuffer = &Data[0];
+
+		SPI_FLASH_ReadBytes(0x01, 256, pBuffer);
+		for(uint16_t i=0;i<256;i++)
+		{
+			printf("%X\n",*pBuffer++);
+		}
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-
-		for (uint16_t i = 0; i <= 0xFF; i++)
-		{
-			Data[i] = 0;
-		}
-		for (uint16_t i = 0; i < 0xFF; i++)
-		{
-			printf("Addr[0x%X] = %X\n", i, SPI_Flash_ReadByte(i));
-		}
-		printf("PROG = %X\n" ,SPI_FLASH_WriteBytes(0x00, pBuffer, 0xFF+1));
-		for (uint16_t i = 0; i <= 0xFF; i++)
-		{
-			printf("Addr[0x%X] = %X\n", i, SPI_Flash_ReadByte(i));
-		}
+		printf("END!\n");
 		while(1);
 
 	}

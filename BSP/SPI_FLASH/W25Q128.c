@@ -16,8 +16,8 @@ uint8_t SPI_Flash_ReadByte(uint32_t ADDR)
 	temp[2] = (uint8_t) ((ADDR & 0xFF00) >> 8);
 	temp[3] = (uint8_t) (ADDR & 0xFF);
 	SPI_Flash_Transmit_Start();
-	HAL_SPI_Transmit(&hspi1, pData, 4, 0xFF);
-	HAL_SPI_Receive(&hspi1, pData, 1, 0xFF);
+	HAL_SPI_Transmit(&FLASH_SPI, pData, 4, 0xFF);
+	HAL_SPI_Receive(&FLASH_SPI, pData, 1, 0xFF);
 	SPI_Flash_Transmit_Stop();
 	return temp[0];
 }
@@ -89,12 +89,13 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data)
 		;
 	return SPI_FLASH_OK;
 }
-SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,uint16_t Size)
+SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
+		uint16_t Size)
 {
 	uint8_t temp[4];
 	uint8_t *pData;
 	pData = &temp[0];
-	if(Size > 0x100)
+	if (Size > 0x100)
 	{
 		return SPI_FLASH_TOOLONGDATA;
 	}
@@ -104,7 +105,7 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,uin
 	temp[2] = (uint8_t) ((ADDR & 0xFF00) >> 8);
 	temp[3] = (uint8_t) (ADDR & 0xFF);
 	SPI_Flash_Transmit_Start();
-	HAL_SPI_Transmit(&hspi1, pData,4, 0xFF);
+	HAL_SPI_Transmit(&hspi1, pData, 4, 0xFF);
 	HAL_SPI_Transmit(&FLASH_SPI, pBuffer, Size, 0xFFFF0);
 	SPI_Flash_Transmit_Stop();
 	while (SPI_FLASH_ReadBusy() == SPI_FLASH_BUSY)
@@ -126,7 +127,8 @@ SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR)
 	HAL_SPI_Transmit(&FLASH_SPI, pData, 4, 0xFF);
 	SPI_Flash_Transmit_Stop();
 	SPI_FLASH_WriteEnable();
-	while(SPI_FLASH_ReadBusy());
+	while (SPI_FLASH_ReadBusy())
+		;
 
 	return SPI_FLASH_OK;
 }
@@ -156,12 +158,28 @@ uint32_t SPI_FLASH_READ_JEDECID(void)
 {
 	uint8_t Data[3];
 	uint8_t *pData = &Data[0];
-	Data[0]=CMD_JEDECID;
+	Data[0] = CMD_JEDECID;
 	SPI_Flash_Transmit_Start();
 	HAL_SPI_Transmit(&FLASH_SPI, pData, 1, 0xFF);
 	HAL_SPI_Receive(&FLASH_SPI, pData, 3, 0xFF);
 	SPI_Flash_Transmit_Stop();
-	return (Data[0]<<16|Data[1]<<8|Data[2]);
+	return (Data[0] << 16 | Data[1] << 8 | Data[2]);
 }
 
+SPI_FLASH_StatusTypedef SPI_FLASH_ReadBytes(uint32_t ADDR, uint32_t size,
+		uint8_t *pBuffer)
+{
+	uint8_t temp[4];
+	uint8_t *pData;
+	pData = &temp[0];
+	temp[0] = CMD_ReadData;
+	temp[1] = (uint8_t) ((ADDR & 0xFF0000) >> 16);
+	temp[2] = (uint8_t) ((ADDR & 0xFF00) >> 8);
+	temp[3] = (uint8_t) (ADDR & 0xFF);
+	SPI_Flash_Transmit_Start();
+	HAL_SPI_Transmit(&FLASH_SPI, pData, 4, 0xFF);
+	HAL_SPI_Receive(&FLASH_SPI, pBuffer, size, 0xFFFF);
+	SPI_Flash_Transmit_Stop();
+	return SPI_FLASH_OK;
+}
 #endif
