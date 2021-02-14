@@ -8,7 +8,7 @@
 #ifndef SPI_FLASH_W25Q128_UNIT_TEST_H_
 #define SPI_FLASH_W25Q128_UNIT_TEST_H_
 
-#if 1	//W25Q128单元测试，默认失能
+#if 0	//W25Q128单元测试，默认失能
 #include "main.h"
 #include "stdio.h"
 #include "W25Q128.h"
