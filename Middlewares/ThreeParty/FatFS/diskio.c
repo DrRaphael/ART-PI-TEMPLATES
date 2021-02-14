@@ -1,155 +1,214 @@
 /*-----------------------------------------------------------------------*/
-/* RAM disk control module for Win32              (C)ChaN, 2014          */
+/* Low level disk I/O module skeleton for FatFs     (C)ChaN, 2014        */
+/*-----------------------------------------------------------------------*/
+/* If a working storage control module is available, it should be        */
+/* attached to the FatFs via a glue function rather than modifying it.   */
+/* This is an example of glue functions to attach various exsisting      */
+/* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-//#include <windows.h>
-#include "diskio.h"
-#include "ff.h"
+#include "diskio.h"		/* FatFs lower layer API */
 
+#include "main.h"		/* STM32 Cube HAL Library Header */
+#include "W25Q128.h"	/* USER Drive For SPI Flash W25Q128 */
 
-/*--------------------------------------------------------------------------
+//#include "usbdisk.h"	/* Example: Header file of existing USB MSD control module */
+//#include "atadrive.h"	/* Example: Header file of existing ATA harddisk control module */
+//#include "sdcard.h"		/* Example: Header file of existing MMC/SDC contorl module */
 
-   Module Private Functions
-
----------------------------------------------------------------------------*/
-
-
-SYSTEMTIME SysTime;			/* Time at creation of RAM disk */
-
-extern BYTE *RamDisk;		/* Poiter to the RAM disk (main.c) */
-extern DWORD RamDiskSize;	/* Size of RAM disk in unit of sector (main.c) */
-
-
-/*--------------------------------------------------------------------------
-
-   Public Functions
-
----------------------------------------------------------------------------*/
-
+/* Definitions of physical drive number for each drive */
+#define ATA			0	/* Example: Map ATA harddisk to physical drive 0 */
+#define MMC			1	/* Example: Map MMC/SD card to physical drive 1 */
+#define USB			2	/* Example: Map USB MSD to physical drive 2 */
+#define SPI_FLASH	3	/* USER: Map SPI Flash to physical drive 3 */
 
 /*-----------------------------------------------------------------------*/
-/* Initialize Disk Drive                                                 */
+/* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_initialize (
-	BYTE pdrv		/* Physical drive nmuber */
+DSTATUS disk_status(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-	if (pdrv) return STA_NOINIT;
-
-	if (!RamDisk) {
-		RamDisk = VirtualAlloc(0, RamDiskSize * 512, MEM_COMMIT, PAGE_READWRITE);
-		GetLocalTime(&SysTime);
+	DSTATUS status = STA_NOINIT;
+	switch (pdrv)
+	{
+		case ATA:
+			break;
+		case MMC:
+			break;
+		case USB:
+			break;
+		case SPI_FLASH:
+		{
+			if (SPI_FLASH_ID == SPI_FLASH_READ_JEDECID())
+			{
+				status &= ~STA_NOINIT;
+			} else
+			{
+				status = STA_NOINIT;
+			}
+			break;
+		}
+		default:
+			status = STA_NOINIT;
 	}
-
-	return RamDisk ? 0 : STA_NOINIT;
+	return status;
 }
 
-
-
 /*-----------------------------------------------------------------------*/
-/* Get Disk Status                                                       */
+/* Inidialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_status (
-	BYTE pdrv		/* Physical drive nmuber (0) */
+DSTATUS disk_initialize(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-	if (pdrv) return STA_NOINIT;
+	DSTATUS status = STA_NOINIT;
+	switch(pdrv)
+	{
+		case ATA :
+			break;
+		case MMC :
+			break;
+		case USB :
+			break;
+		case SPI_FLASH :
+			status = disk_status(pdrv);
+			break;
+		default:
+			status = STA_NOINIT;
+	}
+	return status;
 
-	return RamDisk ? 0 : STA_NOINIT;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_read (
-	BYTE pdrv,			/* Physical drive nmuber (0) */
-	BYTE *buff,			/* Pointer to the data buffer to store read data */
-	DWORD sector,		/* Start sector number (LBA) */
-	UINT count			/* Number of sectors to read */
+DRESULT disk_read(BYTE pdrv, /* Physical drive nmuber to identify the drive */
+BYTE *buff, /* Data buffer to store read data */
+DWORD sector, /* Sector address in LBA */
+UINT count /* Number of sectors to read */
 )
 {
-	if (pdrv || !RamDisk) return RES_NOTRDY;
-	if (sector >= RamDiskSize) return RES_PARERR;
+	DRESULT res;
+	int result;
 
-	CopyMemory(buff, RamDisk + sector * 512, count * 512);
+	switch (pdrv)
+	{
+		case ATA:
+			// translate the arguments here
 
-	return RES_OK;
+			result = ATA_disk_read(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+
+		case MMC:
+			// translate the arguments here
+
+			result = MMC_disk_read(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+
+		case USB:
+			// translate the arguments here
+
+			result = USB_disk_read(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+	}
+
+	return RES_PARERR;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_write (
-	BYTE pdrv,			/* Physical drive nmuber (0) */
-	const BYTE *buff,	/* Pointer to the data to be written */
-	DWORD sector,		/* Start sector number (LBA) */
-	UINT count			/* Number of sectors to write */
+#if _USE_WRITE
+DRESULT disk_write(BYTE pdrv, /* Physical drive nmuber to identify the drive */
+const BYTE *buff, /* Data to be written */
+DWORD sector, /* Sector address in LBA */
+UINT count /* Number of sectors to write */
 )
 {
-	if (pdrv || !RamDisk) return RES_NOTRDY;
-	if (sector >= RamDiskSize) return RES_PARERR;
+	DRESULT res;
+	int result;
 
-	CopyMemory(RamDisk + sector * 512, buff, count * 512);
+	switch (pdrv)
+	{
+		case ATA:
+			// translate the arguments here
 
-	return RES_OK;
+			result = ATA_disk_write(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+
+		case MMC:
+			// translate the arguments here
+
+			result = MMC_disk_write(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+
+		case USB:
+			// translate the arguments here
+
+			result = USB_disk_write(buff, sector, count);
+
+			// translate the reslut code here
+
+			return res;
+	}
+
+	return RES_PARERR;
 }
-
-
+#endif
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_ioctl (
-	BYTE pdrv,		/* Physical drive nmuber (0) */
-	BYTE ctrl,		/* Control code */
-	void* buff		/* Buffer to send/receive data block */
+#if _USE_IOCTL
+DRESULT disk_ioctl(BYTE pdrv, /* Physical drive nmuber (0..) */
+BYTE cmd, /* Control code */
+void *buff /* Buffer to send/receive control data */
 )
 {
-	DRESULT dr;
+	DRESULT res;
+	int result;
 
+	switch (pdrv)
+	{
+		case ATA:
 
-	dr = RES_ERROR;
-	if (!pdrv && RamDisk) {
-		switch (ctrl) {
-		case CTRL_SYNC:
-			dr = RES_OK;
-			break;
+			// Process of the command for the ATA drive
 
-		case GET_SECTOR_COUNT:
-			*(DWORD*)buff = RamDiskSize;
-			dr = RES_OK;
-			break;
+			return res;
 
-		case GET_BLOCK_SIZE:
-			*(DWORD*)buff = 1;
-			dr = RES_OK;
-			break;
-		}
+		case MMC:
+
+			// Process of the command for the MMC/SD card
+
+			return res;
+
+		case USB:
+
+			// Process of the command the USB drive
+
+			return res;
 	}
-	return dr;
+
+	return RES_PARERR;
 }
-
-
-
-/*-----------------------------------------------------------------------*/
-/* Get current time                                                      */
-/*-----------------------------------------------------------------------*/
-
-DWORD get_fattime(void)
-{
-	return 	  (DWORD)(SysTime.wYear - 1980) << 25
-			| (DWORD)SysTime.wMonth << 21
-			| (DWORD)SysTime.wDay << 16
-			| (DWORD)SysTime.wHour << 11
-			| (DWORD)SysTime.wMinute << 5
-			| (DWORD)SysTime.wSecond >> 1;
-}
+#endif

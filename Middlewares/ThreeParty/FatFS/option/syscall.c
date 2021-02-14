@@ -1,10 +1,8 @@
 /*------------------------------------------------------------------------*/
 /* Sample code of OS dependent controls for FatFs                         */
-/* (C)ChaN, 2012                                                          */
+/* (C)ChaN, 2014                                                          */
 /*------------------------------------------------------------------------*/
 
-#include <stdlib.h>		/* ANSI process controls */
-#include <malloc.h>		/* ANSI memory controls */
 
 #include "../ff.h"
 
@@ -18,28 +16,25 @@
 /  the f_mount() function fails with FR_INT_ERR.
 */
 
-int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create due to any error */
+int ff_cre_syncobj (	/* !=0:Function succeeded, ==0:Could not create due to any error */
 	BYTE vol,			/* Corresponding logical drive being processed */
 	_SYNC_t *sobj		/* Pointer to return the created sync object */
 )
 {
 	int ret;
-//	static _SYNC_t sem[_VOLUMES];	/* FreeRTOS */
 
 
 	*sobj = CreateMutex(NULL, FALSE, NULL);		/* Win32 */
-	ret = (*sobj != INVALID_HANDLE_VALUE);
+	ret = (int)(*sobj != INVALID_HANDLE_VALUE);
 
-//	*sobj = SyncObjects[vol];		/* uITRON (give a static created sync object) */
-//	ret = 1;						/* The initial value of the semaphore must be 1. */
+//	*sobj = SyncObjects[vol];			/* uITRON (give a static created sync object) */
+//	ret = 1;							/* The initial value of the semaphore must be 1. */
 
-//	*sobj = OSMutexCreate(0, &err);	/* uC/OS-II */
-//	ret = (err == OS_NO_ERR);
+//	*sobj = OSMutexCreate(0, &err);		/* uC/OS-II */
+//	ret = (int)(err == OS_NO_ERR);
 
-//  if (!sem[vol])					/* FreeRTOS */
-//		sem[vol] = xSemaphoreCreateMutex();
-//	*sobj = sem[vol];
-//	ret = (*sobj != NULL);
+//	*sobj = xSemaphoreCreateMutex();	/* FreeRTOS */
+//	ret = (int)(*sobj != NULL);
 
 	return ret;
 }
@@ -54,7 +49,7 @@ int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create due to any erro
 /  the f_mount() function fails with FR_INT_ERR.
 */
 
-int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any error */
+int ff_del_syncobj (	/* !=0:Function succeeded, ==0:Could not delete due to any error */
 	_SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
 )
 {
@@ -66,9 +61,10 @@ int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any erro
 //	ret = 1;					/* uITRON (nothing to do) */
 
 //	OSMutexDel(sobj, OS_DEL_ALWAYS, &err);	/* uC/OS-II */
-//	ret = (err == OS_NO_ERR);
+//	ret = (int)(err == OS_NO_ERR);
 
-//	ret = 1;					/* FreeRTOS (nothing to do) */
+//  vSemaphoreDelete(sobj);		/* FreeRTOS */
+//	ret = 1;
 
 	return ret;
 }
@@ -88,14 +84,14 @@ int ff_req_grant (	/* 1:Got a grant to access the volume, 0:Could not get a gran
 {
 	int ret;
 
-	ret = (WaitForSingleObject(sobj, _FS_TIMEOUT) == WAIT_OBJECT_0);	/* Win32 */
+	ret = (int)(WaitForSingleObject(sobj, _FS_TIMEOUT) == WAIT_OBJECT_0);	/* Win32 */
 
-//	ret = (wai_sem(sobj) == E_OK);				/* uITRON */
+//	ret = (int)(wai_sem(sobj) == E_OK);			/* uITRON */
 
 //	OSMutexPend(sobj, _FS_TIMEOUT, &err));		/* uC/OS-II */
-//	ret = (err == OS_NO_ERR);
+//	ret = (int)(err == OS_NO_ERR);
 
-//	ret = (xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);	/* FreeRTOS */
+//	ret = (int)(xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);	/* FreeRTOS */
 
 	return ret;
 }
@@ -137,7 +133,7 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block */
 	UINT msize		/* Number of bytes to allocate */
 )
 {
-	return malloc(msize);	/* Allocate a memory block with POSIX API */
+	return malloc(msize);	/* Allocate a new memory block with POSIX API */
 }
 
 
@@ -149,7 +145,7 @@ void ff_memfree (
 	void* mblock	/* Pointer to the memory block to free */
 )
 {
-	free(mblock);
+	free(mblock);	/* Discard the memory block with POSIX API */
 }
 
 #endif
