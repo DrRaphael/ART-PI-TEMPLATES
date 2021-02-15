@@ -71,6 +71,8 @@ uint8_t SPIpDataBuffer[SPI_DATA_BUF_SIZE];
 uint8_t SPIFlashInfo[10];
 
 uint8_t SPI_Flash_ReadByte(uint32_t ADDR);
+SPI_FLASH_StatusTypedef SPI_FLASH_ReadBytes(uint32_t ADDR, uint32_t size,
+		uint8_t *pBuffer);
 SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteEnable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteDisable(void);
@@ -80,7 +82,6 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
 SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR);
 SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);
 uint32_t SPI_FLASH_READ_JEDECID(void);
-SPI_FLASH_StatusTypedef SPI_FLASH_ReadBytes(uint32_t ADDR, uint32_t size,
-		uint8_t *pBuffer);
+
 #endif
 #endif /* SPI_FLASH_W25Q128_H_ */
