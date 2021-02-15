@@ -138,8 +138,8 @@ BYTE cmd, /* Control code */
 void *buff /* Buffer to send/receive control data */
 )
 {
-	DRESULT res;
+	DRESULT res=RES_PARERR;
 
-	return RES_PARERR;
+	return res;
 }
 
