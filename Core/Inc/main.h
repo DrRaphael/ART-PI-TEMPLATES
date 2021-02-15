@@ -62,8 +62,6 @@ void Error_Handler(void);
 #define FLASH_SPI hspi1
 #define LED_R_Pin GPIO_PIN_15
 #define LED_R_GPIO_Port GPIOC
-#define SPI2_Pin GPIO_PIN_3
-#define SPI2_GPIO_Port GPIOI
 #define LED_B_Pin GPIO_PIN_8
 #define LED_B_GPIO_Port GPIOI
 #define KEY_Pin GPIO_PIN_4

@@ -77,8 +77,10 @@ SPI_FLASH_StatusTypedef SPI_FLASH_ReadBusy(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteEnable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteDisable(void);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data);
+SPI_FLASH_StatusTypedef SPI_FLASH_PageWrite(uint32_t ADDR, uint8_t *pBuffer,
+		uint32_t Size);
 SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
-		uint16_t Size);
+		uint32_t Size);
 SPI_FLASH_StatusTypedef SPI_FLASH_SectorErase(uint32_t ADDR);
 SPI_FLASH_StatusTypedef SPI_FLASH_ChipErase(void);
 uint32_t SPI_FLASH_READ_JEDECID(void);

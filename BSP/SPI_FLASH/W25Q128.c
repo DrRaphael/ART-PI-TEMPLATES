@@ -89,8 +89,9 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteByte(uint32_t ADDR, uint8_t Data)
 		;
 	return SPI_FLASH_OK;
 }
-SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
-		uint16_t Size)
+
+SPI_FLASH_StatusTypedef SPI_FLASH_PageWrite(uint32_t ADDR, uint8_t *pBuffer,
+		uint32_t Size)
 {
 	uint8_t temp[4];
 	uint8_t *pData;
@@ -110,6 +111,30 @@ SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
 	SPI_Flash_Transmit_Stop();
 	while (SPI_FLASH_ReadBusy() == SPI_FLASH_BUSY)
 		;
+	return SPI_FLASH_OK;
+}
+
+SPI_FLASH_StatusTypedef SPI_FLASH_WriteBytes(uint32_t ADDR, uint8_t *pBuffer,
+		uint32_t Size)
+{
+	uint32_t count;
+	uint16_t rem;
+	if (Size <= 256)
+	{
+		SPI_FLASH_PageWrite(ADDR, pBuffer, Size);
+	} else
+	{
+		count = Size / 256;
+		rem = Size % 256;
+		for (uint32_t i = 0; i < count; i++)
+		{
+			SPI_FLASH_PageWrite(ADDR + (i * 256), pBuffer + (i * 256), 256);
+		}
+		if(rem)
+		{
+			SPI_FLASH_PageWrite(ADDR+Size-rem, pBuffer+Size-rem, rem);
+		}
+	}
 	return SPI_FLASH_OK;
 }
 

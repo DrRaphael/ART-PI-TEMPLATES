@@ -100,6 +100,7 @@ UINT count /* Number of sectors to read */
 			break;
 		case SPI_FLASH:
 		{
+			sector += 1024;
 			if (SPI_FLASH_ReadBytes(sector << 12, count << 12, buff)
 					== SPI_FLASH_OK)
 			{
@@ -126,7 +127,32 @@ UINT count /* Number of sectors to write */
 )
 {
 
-	return 0;
+	DRESULT res = RES_PARERR;
+	switch (pdrv)
+	{
+		case ATA:
+			break;
+		case MMC:
+			break;
+		case USB:
+			break;
+		case SPI_FLASH:
+		{
+			sector += 1024;
+			SPI_FLASH_SectorErase(sector<<12);
+			if (SPI_FLASH_WriteBytes(sector << 12, buff, count << 12)
+					== SPI_FLASH_OK)
+			{
+				res = RES_OK;
+			} else
+			{
+				res = RES_ERROR;
+			}
+
+		}
+	}
+
+	return res;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -138,8 +164,37 @@ BYTE cmd, /* Control code */
 void *buff /* Buffer to send/receive control data */
 )
 {
-	DRESULT res=RES_PARERR;
+	DRESULT status = RES_PARERR;
+	switch (pdrv)
+	{
+		case ATA: /* SD CARD */
+			break;
+		case MMC:
+			break;
+		case USB:
+			break;
+		case SPI_FLASH:
+			switch (cmd)
+			{
+				/* 扇区数量：3072*4096/1024/1024=12(MB) */
+				case GET_SECTOR_COUNT:
+					*(DWORD*) buff = 3072;
+					break;
+					/* 扇区大小  */
+				case GET_SECTOR_SIZE:
+					*(WORD*) buff = 4096;
+					break;
+					/* 同时擦除扇区个数 */
+				case GET_BLOCK_SIZE:
+					*(DWORD*) buff = 1;
+					break;
+			}
+			status = RES_OK;
+			break;
 
-	return res;
+		default:
+			status = RES_PARERR;
+	}
+	return status;
 }
 

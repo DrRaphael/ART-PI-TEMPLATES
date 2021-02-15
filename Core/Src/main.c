@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "quadspi.h"
 #include "rtc.h"
 #include "spi.h"
 #include "tim.h"
@@ -95,9 +96,9 @@ int main(void)
   MX_GPIO_Init();
   MX_UART4_Init();
   MX_SPI1_Init();
-  MX_SPI2_Init();
   MX_TIM5_Init();
   MX_RTC_Init();
+  MX_QUADSPI_Init();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
 
@@ -105,14 +106,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		uint8_t Data[256];
-		uint8_t *pBuffer = &Data[0];
 
-		SPI_FLASH_ReadBytes(0x01, 256, pBuffer);
-		for(uint16_t i=0;i<256;i++)
-		{
-			printf("%X\n",*pBuffer++);
-		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -179,7 +173,8 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_UART4
-                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SPI2;
+                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_QSPI;
+  PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
   PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
