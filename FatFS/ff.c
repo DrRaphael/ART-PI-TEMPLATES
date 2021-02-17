@@ -3445,7 +3445,8 @@ BYTE mode /* Access mode and file open mode flags */
 			}
 			if (res == FR_OK && (mode & FA_CREATE_ALWAYS))
 			{ /* Truncate it if overwrite mode */
-				dw = GET_FATTIME();
+//todo				dw = GET_FATTIME();
+				dw =0;
 #if _FS_EXFAT
 				if (fs->fs_type == FS_EXFAT) {
 					/* Get current allocation info */
@@ -5656,6 +5657,7 @@ UINT au /* Size of allocation unit in unit of byte or sector */
 	st_word(tbl + BPB_NumHeads, 255); /* Number of heads */
 	st_dword(tbl + BPB_HiddSec, b_vol); /* Volume offset */
 	n = GET_FATTIME(); /* Use current time as VSN */
+//to'do	n = GET_FATTIME(); /* Use current time as VSN */
 	if (fmt == FS_FAT32)
 	{
 		st_dword(tbl + BS_VolID32, n); /* VSN */

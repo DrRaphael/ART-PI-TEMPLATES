@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "quadspi.h"
 #include "rtc.h"
 #include "spi.h"
 #include "tim.h"
@@ -97,6 +98,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM5_Init();
   MX_RTC_Init();
+  MX_QUADSPI_Init();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
 
@@ -104,50 +106,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		FRESULT res ;
-		FATFS fs ;
-		FIL fo;
-		uint32_t fnum;
-		BYTE textFileBuffer[] = "Hello FatFS\r\n";
-		res = f_mount(&fs, "3:", 1);
-		if(res == FR_OK)
-		{
-			printf("挂载成功\n");
-		}else
-		{
-			printf("挂载失败[Error Code %d]\n",res);
-			while(1);
-		}
-//		res = f_open(&fo,"3:Fat_Test.txt",FA_CREATE_ALWAYS|FA_WRITE);
-		if(res == FR_OK)
-		{
-			printf("文件打开成功\n");
-		}
-		else
-		{
-			printf("文件打开失败[Error Code %d]\n",res);
-			while(1);
-		}
-
-//		res = f_write(&fo, textFileBuffer,sizeof(textFileBuffer)-1, fnum);
-		if(res == FR_OK)
-		{
-			printf("写入成功\n");
-		}
-		else
-		{
-			printf("写入失败[Error Code %d]\n",res);
-		}
-		res = f_close(&fo);
-		if(res == FR_OK)
-		{
-			printf("文件关闭成功\n");
-		}
-		else
-		{
-			printf("文件关闭失败[Error Code %d]\n",res);
-		}
-
+		FATFS fs;
+		FIL fp;
+		uint32_t bw=0;
+		f_mount(&fs, "3:", 1);
+		f_mkfs("3:", 2, 4096);
+		f_open(&fp, "3:1.txt", FA_CREATE_ALWAYS|FA_WRITE);
+		f_write(&fp, "HELLO",5,bw);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -214,7 +179,8 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_UART4
-                              |RCC_PERIPHCLK_SPI1;
+                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_QSPI;
+  PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
   PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
