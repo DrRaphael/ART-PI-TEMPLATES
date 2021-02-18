@@ -73,3 +73,4 @@ Debug/Core/Startup/subdir.mk
 Debug/Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 Debug/FATFS/App/subdir.mk
 Debug/FATFS/Target/subdir.mk
+/Debug/
